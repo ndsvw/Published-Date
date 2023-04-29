@@ -4,73 +4,63 @@
 // Classes
 //
 
+const DateType = {
+  PUBLISHED: 'published',
+  UPDATED: 'updated',
+  PUBLISHEDORUPDATED: 'published or updated'
+};
+
+class SearchResult {
+  constructor(searcher, extractedValue, interpretedDate) {
+    this.searcher = searcher;
+    this.extractedValue = extractedValue;
+    this.interpretedDate = interpretedDate;
+  }
+
+  toDto() {
+    return {
+      dateType: this.searcher.dateType,
+      extractedValue: this.extractedValue,
+      interpretedDate: this.interpretedDate,
+    };
+  }
+}
+
+class Searcher {
+  constructor(dateType) {
+    this.dateType = dateType;
+  }
+  
+  search() {
+    throw new Error('Method not implemented');
+  }
+}
+
+class MetaSearcher extends Searcher {
+  constructor(dateType, searchMeta, allMetas) {
+    super(dateType);
+    this.searchMeta = searchMeta;
+    this.allMetas = allMetas;
+  }
+
+  search() {
+    let match = this.allMetas.find(x => x.name === this.searchMeta);
+    if (match) {
+      let content = match.content;
+      if (content) {
+        let date = Date.parse(content);
+        if (isNaN(date))
+          return null;
+        return new SearchResult(this, content, date);
+      }
+    }
+  }
+}
+
 class DateParser {
   parse(dateString) {
     let parsedDate = Date.parse(dateString);
     return isNaN(parsedDate) ? undefined : parsedDate;
-  }
-}
-
-class MetasSearcher {
-  constructor(metas) {
-    this.metas = metas;
-  }
-
-  searchForDates() {
-    let publishedDate;
-    let modifiedDate;
-
-    // Sources for meta tags:
-    // https://gist.github.com/lancejpollard/1978404
-    // https://www.dublincore.org/specifications/dublin-core/dcmi-terms/
-
-    let publishedProperties = [
-      "article:published_time",
-      "created",
-      "available",
-      "date",
-      "dateAccepted",
-      "dateCopyrighted",
-      "issued",
-    ];
-
-    let modifiedProperties = [
-      "article:modified_time",
-      "og:updated_time",
-      "modified",
-      "revised",
-    ];
-
-    for (let property of publishedProperties) {
-      let match = this.metas.find(x => x.name === property);
-      if (match) {
-        let content = match.content;
-        if (content) {
-          let date = Date.parse(content);
-          if (!isNaN(date))
-            publishedDate = date;
-          break;
-        }
-      }
-    }
-
-    for (let property of modifiedProperties) {
-      let match = this.metas.find(x => x.name === property);
-      if (match) {
-        let content = match.content;
-        if (content) {
-          let date = Date.parse(content);
-          if (!isNaN(date))
-            modifiedDate = date;
-          break;
-        }
-      }
-    }
-
-    return {
-      published: publishedDate,
-      updated: modifiedDate
-    };
   }
 }
 
@@ -111,18 +101,52 @@ async function getDateInformation() {
     let metasJson = result.response;
     let metas = JSON.parse(metasJson);
     console.log("Metas:", metas);
-    return Promise.resolve(findOutDate(metas));
+
+    let datesFromMetas = findOutDatesFromMetas(metas);
+    console.log(datesFromMetas);
+    return Promise.resolve(datesFromMetas);
+
+    // result = await sendQueryToTab(tab, "get-ld-jsons");
+    // if (!result)
+    //   return Promise.resolve(undefined);
+      
+    // let ldJsons = result.response;
+    // let lds = JSON.parse(ldJsons);
+    // console.log("LD-Jsons:", lds);
+    // let dateFromLdJsons = findOutDateFromLdJsons(lds);
+    // return Promise.resolve(dateFromLdJsons);
+
+    //return Promise.resolve(undefined);
   } else {
     console.error("no active tab");
     return Promise.resolve("ooops");
   }
 }
 
-function findOutDate(metas) {
-  let metasSearcher = new MetasSearcher(metas);
-  var dates = metasSearcher.searchForDates();
-  return {
-    published: dates.published,
-    updated: dates.updated
-  };
+// function findOutDateFromLdJsons(jsons){
+//   for(let json of jsons){
+//     try{
+//       let ld = JSON.parse(json);
+//       if(ld["@context"] === "https://schema.org")
+//     }
+//   }
+// }
+
+function findOutDatesFromMetas(metas) {
+  let metasSearchers = [
+      new MetaSearcher(DateType.PUBLISHED, "article:published_time", metas),
+      new MetaSearcher(DateType.PUBLISHED, "created", metas),
+      new MetaSearcher(DateType.PUBLISHED, "available", metas),
+      new MetaSearcher(DateType.PUBLISHED, "date", metas),
+      new MetaSearcher(DateType.PUBLISHED, "dateAccepted", metas),
+      new MetaSearcher(DateType.PUBLISHED, "dateCopyrighted", metas),
+      new MetaSearcher(DateType.PUBLISHED, "issued", metas),
+
+      new MetaSearcher(DateType.UPDATED, "article:modified_time", metas),
+      new MetaSearcher(DateType.UPDATED, "og:updated_time", metas),
+      new MetaSearcher(DateType.UPDATED, "modified", metas),
+      new MetaSearcher(DateType.UPDATED, "revised", metas),
+  ];
+
+  return metasSearchers.map(x => x.search()).filter(x => x !== undefined).map(x => x.toDto());
 }
