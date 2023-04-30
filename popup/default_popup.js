@@ -5,6 +5,7 @@ window.onload = async function () {
   console.log("onload");
   var backgroundPage = browser.extension.getBackgroundPage();
   let results = await backgroundPage.getDateInformation();
+  results.sort(function(a,b){ return b.confidence - a.confidence; });
 
   var numerOfResultsHeading = document.getElementById("number-of-results");
 
@@ -13,7 +14,7 @@ window.onload = async function () {
     return;
   }
 
-  numerOfResultsHeading.innerHTML = results.length + " dates found";
+  numerOfResultsHeading.innerHTML = results.length + " date(s) found";
 
   var table = document.getElementById("results");
   table.innerHTML = "";
@@ -24,10 +25,7 @@ window.onload = async function () {
     const newRow = document.createElement("tr");
 
     const cellConfidence = document.createElement("td");
-    const imageConfidence = document.createElement("img");
-    imageConfidence.setAttribute("src", "../icons/dot/dot-circle-svgrepo-com.svg");
-    imageConfidence.setAttribute("title", "High confidence: The information was provided by the website.");
-    imageConfidence.classList.add("green-dot");
+    let imageConfidence = createConfidenceImage(r.confidence);
     cellConfidence.appendChild(imageConfidence);
 
     const cellSearchMethodShortcut = document.createElement("td");
@@ -61,4 +59,21 @@ function searchMethodShortcutToColorLabelClass(searchMethodShortcut) {
     return "pink-label";
   else
     return "";
+}
+
+function createConfidenceImage(confidence) {
+  const imageConfidence = document.createElement("img");
+  imageConfidence.setAttribute("src", "../icons/dot/dot-circle-svgrepo-com.svg");
+  if(confidence >= 75) {
+    imageConfidence.setAttribute("title", "High confidence: The information was provided directly by the website.");
+    imageConfidence.classList.add("green-dot");
+  } else if(confidence >= 33) {
+    imageConfidence.setAttribute("title", "Medium confidence: The information was retrieved unconventionally and could be wrong.");
+    imageConfidence.classList.add("yellow-dot");
+  } else {
+    imageConfidence.setAttribute("title", "Low confidence: The information was generated based on assumptions and could be totally wrong.");
+    imageConfidence.classList.add("orange-dot");
+  }
+
+  return imageConfidence;
 }
