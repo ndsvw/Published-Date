@@ -11,8 +11,8 @@ const DateType = {
 };
 
 class SearchResult {
-  constructor(searcher, extractedValue, interpretedDate, searchMethodShortcut) {
-    this.searcher = searcher;
+  constructor(dateType, extractedValue, interpretedDate, searchMethodShortcut) {
+    this.dateType = dateType;
     this.extractedValue = extractedValue;
     this.interpretedDate = interpretedDate;
     this.searchMethodShortcut = searchMethodShortcut;
@@ -20,7 +20,7 @@ class SearchResult {
 
   toDto() {
     return {
-      dateType: this.searcher.dateType,
+      dateType: this.dateType,
       extractedValue: this.extractedValue,
       interpretedDate: this.interpretedDate,
       searchMethodShortcut: this.searchMethodShortcut,
@@ -53,7 +53,7 @@ class MetaSearcher extends Searcher {
         let date = Date.parse(content);
         if (isNaN(date))
           return null;
-        return new SearchResult(this, content, date, "meta");
+        return new SearchResult(this.dateType, content, date, "meta");
       }
     }
   }
@@ -90,7 +90,7 @@ class JsonLdSearcher extends Searcher {
           let date = Date.parse(content);
           if (isNaN(date))
             return null;
-          return new SearchResult(this, content, date, "json-ld");
+          return new SearchResult(this.dateType, content, date, "json-ld");
         } else {
           if(ld["@type"] !== this.searchLdType)
             return undefined;
@@ -102,7 +102,7 @@ class JsonLdSearcher extends Searcher {
           let date = Date.parse(content);
           if (isNaN(date))
             return null;
-          return new SearchResult(this, content, date, "json-ld");  
+          return new SearchResult(this.dateType, content, date, "json-ld");  
         }
       }
     }
@@ -163,8 +163,16 @@ async function getDateInformation() {
       let ldJsons = jsonLdResult.response;
       let lds = JSON.parse(ldJsons);
       console.log("LD-Jsons:", lds);
-      let dateFromLdJsons = findOutDateFromLdJsons(lds);
+      let dateFromLdJsons = findOutDatesFromLdJsons(lds);
       results = results.concat(dateFromLdJsons);
+    }
+
+    let timeTagsResults = await sendQueryToTab(tab, "get-time-tag-datetimes");
+    if(timeTagsResults) {
+      let jsonDatetimes = timeTagsResults.response;
+      let datetimes = JSON.parse(jsonDatetimes);
+      let dateFromTimeTagDatetimes = findOutDatesFromTimeTagDatetimes(datetimes);
+      results = results.concat(dateFromTimeTagDatetimes);
     }
       
     return Promise.resolve(results);
@@ -174,7 +182,7 @@ async function getDateInformation() {
   }
 }
 
-function findOutDateFromLdJsons(jsons){
+function findOutDatesFromLdJsons(jsons){
   // https://schema.org/Date
 
   let ldSearchers = [
@@ -222,7 +230,6 @@ function findOutDatesFromMetas(metas) {
       new MetaSearcher(DateType.PUBLISHED, "article:published_time", metas),
       new MetaSearcher(DateType.PUBLISHED, "created", metas),
       new MetaSearcher(DateType.PUBLISHED, "available", metas),
-      new MetaSearcher(DateType.PUBLISHED, "date", metas),
       new MetaSearcher(DateType.PUBLISHED, "dateAccepted", metas),
       new MetaSearcher(DateType.PUBLISHED, "dateCopyrighted", metas),
       new MetaSearcher(DateType.PUBLISHED, "issued", metas),
@@ -231,7 +238,22 @@ function findOutDatesFromMetas(metas) {
       new MetaSearcher(DateType.UPDATED, "og:updated_time", metas),
       new MetaSearcher(DateType.UPDATED, "modified", metas),
       new MetaSearcher(DateType.UPDATED, "revised", metas),
+
+      new MetaSearcher(DateType.PUBLISHEDORUPDATED, "date", metas),
   ];
 
   return metasSearchers.map(x => x.search()).filter(x => x !== undefined && x !== null).map(x => x.toDto());
+}
+
+function findOutDatesFromTimeTagDatetimes(datetimes) {
+  console.warn(datetimes);
+  let results = [];
+  datetimes.forEach(d => {
+    let date = Date.parse(d);
+    if (!isNaN(date))
+      results.push(new SearchResult(DateType.PUBLISHEDORUPDATED, d, date, "time-tag"));  
+  });
+  console.warn(results);
+
+  return results;
 }

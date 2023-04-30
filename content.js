@@ -19,5 +19,11 @@ browser.runtime.onMessage.addListener(request => {
                 .map(x => x.innerText);
             return Promise.resolve({ response: JSON.stringify(jsons) });
         }
+        else if (request.query == "get-time-tag-datetimes") {
+            let timeTags = Array.from(document.querySelectorAll("time[datetime]"))
+                .map(x => x.attributes.datetime.value);
+                console.log(timeTags);
+            return Promise.resolve({ response: JSON.stringify(timeTags) });
+        }
     }
 });

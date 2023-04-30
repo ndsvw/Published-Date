@@ -57,6 +57,8 @@ function searchMethodShortcutToColorLabelClass(searchMethodShortcut) {
     return "lightblue-label"
   else if(searchMethodShortcut === "json-ld")
     return "orange-label";
+  else if(searchMethodShortcut === "time-tag")
+    return "pink-label";
   else
     return "";
 }
