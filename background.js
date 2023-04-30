@@ -11,10 +11,11 @@ const DateType = {
 };
 
 class SearchResult {
-  constructor(searcher, extractedValue, interpretedDate) {
+  constructor(searcher, extractedValue, interpretedDate, searchMethodShortcut) {
     this.searcher = searcher;
     this.extractedValue = extractedValue;
     this.interpretedDate = interpretedDate;
+    this.searchMethodShortcut = searchMethodShortcut;
   }
 
   toDto() {
@@ -22,6 +23,7 @@ class SearchResult {
       dateType: this.searcher.dateType,
       extractedValue: this.extractedValue,
       interpretedDate: this.interpretedDate,
+      searchMethodShortcut: this.searchMethodShortcut,
     };
   }
 }
@@ -51,7 +53,7 @@ class MetaSearcher extends Searcher {
         let date = Date.parse(content);
         if (isNaN(date))
           return null;
-        return new SearchResult(this, content, date);
+        return new SearchResult(this, content, date, "meta");
       }
     }
   }
@@ -75,7 +77,6 @@ class JsonLdSearcher extends Searcher {
       if(ld["@context"] === "https://schema.org" || ld["@context"] === "https://schema.org/") {
         if(ld["@graph"] !== undefined) {
           let filtered = ld["@graph"].filter(x => x["@type"] === this.searchLdType);
-          console.log("aaa " + filtered);
 
           if(filtered === undefined || filtered.length == 0)
             return undefined;
@@ -89,7 +90,7 @@ class JsonLdSearcher extends Searcher {
           let date = Date.parse(content);
           if (isNaN(date))
             return null;
-          return new SearchResult(this, content, date);
+          return new SearchResult(this, content, date, "json-ld");
         } else {
           if(ld["@type"] !== this.searchLdType)
             return undefined;
@@ -101,7 +102,7 @@ class JsonLdSearcher extends Searcher {
           let date = Date.parse(content);
           if (isNaN(date))
             return null;
-          return new SearchResult(this, content, date);  
+          return new SearchResult(this, content, date, "json-ld");  
         }
       }
     }

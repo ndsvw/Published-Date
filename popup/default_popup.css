@@ -1,5 +1,20 @@
 html,
 body {
-  height: 150px;
-  width: 240px;
+  height: 180px;
+  width: 100%;
+  min-width: 100px;
+}
+
+.green-dot {
+  filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg) brightness(119%) contrast(119%);
+  width: 16px;
+  height: 16px;
+}
+
+.lightblue-label {
+  background-color: lightblue;
+}
+
+.orange-label {
+  background-color: orange;
 }
