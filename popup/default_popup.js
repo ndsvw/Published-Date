@@ -5,7 +5,8 @@ window.onload = async function () {
   console.log("onload");
   var backgroundPage = browser.extension.getBackgroundPage();
   let results = await backgroundPage.getDateInformation();
-  results.sort(function(a,b){ return b.confidence - a.confidence; });
+
+  await updateWaybackMachineArea(backgroundPage);
 
   var numerOfResultsHeading = document.getElementById("number-of-results");
 
@@ -13,6 +14,8 @@ window.onload = async function () {
     numerOfResultsHeading.innerHTML = "No dates found";
     return;
   }
+
+  results.sort(function(a,b){ return b.confidence - a.confidence; });
 
   numerOfResultsHeading.innerHTML = results.length + " date(s) found";
 
@@ -76,4 +79,21 @@ function createConfidenceImage(confidence) {
   }
 
   return imageConfidence;
+}
+
+async function updateWaybackMachineArea(backgroundPage) {
+  let waybackArea = document.getElementById("wayback-area");
+  let waybackLink = document.getElementById("wayback-link");
+  let tabUrl = await backgroundPage.getUrl();
+  if(tabUrl.startsWith("http")) {
+    let currentYear = new Date().getFullYear();
+    let waybackUrl = `https://web.archive.org/web/${currentYear}0000000000*/${tabUrl}`;
+    const link = document.createElement("a");
+    link.setAttribute("href", waybackUrl)
+    link.innerHTML = "WayBackMachine for this site";
+    waybackLink.appendChild(link);
+    waybackArea.style.display = 'block';
+  } else {
+    waybackArea.style.display = 'none';
+  }
 }

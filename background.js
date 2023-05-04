@@ -261,3 +261,14 @@ function findOutDatesFromTimeTagDatetimes(datetimes) {
 
   return results;
 }
+
+async function getUrl() {
+  let tabs = await browser.tabs.query({
+    currentWindow: true,
+    active: true
+  });
+  let tab = tabs[0];
+  if (tab)
+    return tab.url;
+  return "about:blank";
+}
