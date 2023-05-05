@@ -11,16 +11,16 @@ window.onload = async function () {
   var numerOfResultsHeading = document.getElementById("number-of-results");
 
   if(results === undefined) {
-    numerOfResultsHeading.innerHTML = "No dates found";
+    numerOfResultsHeading.innerText = "No dates found";
     return;
   }
 
   results.sort(function(a,b){ return b.confidence - a.confidence; });
 
-  numerOfResultsHeading.innerHTML = results.length + " date(s) found";
+  numerOfResultsHeading.innerText = results.length + " date(s) found";
 
   var table = document.getElementById("results");
-  table.innerHTML = "";
+  table.innerText = "";
 
   results.forEach(r => {
     let dt = DateTime.fromJSDate(new Date(r.interpretedDate));
@@ -33,15 +33,15 @@ window.onload = async function () {
 
     const cellSearchMethodShortcut = document.createElement("td");
     const labelSearchMethodShortcut = document.createElement("label");
-    labelSearchMethodShortcut.innerHTML = r.searchMethodShortcut;
+    labelSearchMethodShortcut.innerText = r.searchMethodShortcut;
     labelSearchMethodShortcut.classList.add(searchMethodShortcutToColorLabelClass(r.searchMethodShortcut));
     cellSearchMethodShortcut.appendChild(labelSearchMethodShortcut);
 
     const cellType = document.createElement("td");
-    cellType.innerHTML = r.dateType;
+    cellType.innerText = r.dateType;
     
     const cellDate = document.createElement("td");
-    cellDate.innerHTML = dt.toLocaleString(DateTime.DATETIME_MED);
+    cellDate.innerText = dt.toLocaleString(DateTime.DATETIME_MED);
     cellDate.setAttribute("title", dt.toRelativeCalendar());
 
     newRow.appendChild(cellConfidence);
@@ -90,7 +90,7 @@ async function updateWaybackMachineArea(backgroundPage) {
     let waybackUrl = `https://web.archive.org/web/${currentYear}0000000000*/${tabUrl}`;
     const link = document.createElement("a");
     link.setAttribute("href", waybackUrl)
-    link.innerHTML = "WayBackMachine for this site";
+    link.innerText = "WayBackMachine for this site";
     waybackLink.appendChild(link);
     waybackArea.style.display = 'block';
   } else {

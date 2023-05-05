@@ -1,9 +1,9 @@
 {
-  "description": "This AddOn tries to find out when exactly a website or an article on a website was published and last edited.",
+  "description": "This Add-on tries to find out when exactly a website or an article on a website was published and last edited.",
   "manifest_version": 2,
   "name": "Published Date",
-  "version": "1.0",
-  "homepage_url": "https://github.com/ndsvw/",
+  "version": "1.0.0",
+  "homepage_url": "https://github.com/ndsvw/Published-Date",
   "icons": {
     "48": "icons/icon.png"
   },
