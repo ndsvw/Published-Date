@@ -32,11 +32,7 @@ window.onload = async function () {
     cellConfidence.appendChild(imageConfidence);
 
     const cellSearchMethodShortcut = document.createElement("td");
-    const labelSearchMethodShortcut = document.createElement("label");
-    labelSearchMethodShortcut.innerText = r.searchMethodShortcut;
-    labelSearchMethodShortcut.classList.add("label");
-    labelSearchMethodShortcut.classList.add(searchMethodShortcutToColorLabelClass(r.searchMethodShortcut));
-    cellSearchMethodShortcut.appendChild(labelSearchMethodShortcut);
+    cellSearchMethodShortcut.appendChild(createMethodShortcutLabel(r.searchMethodShortcut));
 
     const cellType = document.createElement("td");
     cellType.innerText = r.dateType;
@@ -54,15 +50,28 @@ window.onload = async function () {
   });
 }
 
-function searchMethodShortcutToColorLabelClass(searchMethodShortcut) {
-  if(searchMethodShortcut === "meta")
-    return "lightblue-label"
-  else if(searchMethodShortcut === "json-ld")
-    return "orange-label";
-  else if(searchMethodShortcut === "time-tag")
-    return "pink-label";
-  else
-    return "";
+function createMethodShortcutLabel(searchMethodShortcut) {
+  const labelSearchMethodShortcut = document.createElement("label");
+  labelSearchMethodShortcut.innerText = searchMethodShortcut;
+  labelSearchMethodShortcut.classList.add("label");
+
+  if(searchMethodShortcut === "meta") {
+    labelSearchMethodShortcut.classList.add("lightblue-label");
+    labelSearchMethodShortcut.setAttribute("title", "Extracted from a 'meta tag' of the web page");
+  }
+  else if(searchMethodShortcut === "json-ld") {
+    labelSearchMethodShortcut.classList.add("orange-label");
+    labelSearchMethodShortcut.setAttribute("title", "Extracted from JSON-LD that was injected into the web page");
+  }
+  else if(searchMethodShortcut === "time-tag") {
+    labelSearchMethodShortcut.classList.add("pink-label");
+    labelSearchMethodShortcut.setAttribute("title", "Extracted from a 'time tag' somewhere on the web page");
+  }
+  else {
+    console.warn(`Invalid operation. Shortcut ${searchMethodShortcut} not recognized.`);
+  }
+
+  return labelSearchMethodShortcut;
 }
 
 function createConfidenceImage(confidence) {
