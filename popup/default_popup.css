@@ -5,21 +5,27 @@ body {
   min-width: 100px;
 }
 
-.green-dot {
-  /* filter generated with https://codepen.io/sosuke/pen/Pjoqqp */
-  filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg) brightness(119%) contrast(119%);
+.confidence-darkgreen {
+  filter: invert(42%) sepia(52%) saturate(2692%) hue-rotate(91deg) brightness(104%) contrast(107%);
   width: 16px;
   height: 16px;
 }
 
-.yellow-dot {
+.confidence-lightgreen {
+  /* filter generated with https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(55%) sepia(85%) saturate(1594%) hue-rotate(77deg) brightness(110%) contrast(130%);
+  width: 16px;
+  height: 16px;
+}
+
+.confidence-yellow {
   /* filter generated with https://codepen.io/sosuke/pen/Pjoqqp */
   filter: invert(96%) sepia(49%) saturate(7135%) hue-rotate(357deg) brightness(107%) contrast(104%);
   width: 16px;
   height: 16px;
 }
 
-.orange-dot {
+.confidence-orange {
   /* filter generated with https://codepen.io/sosuke/pen/Pjoqqp */
   filter: invert(39%) sepia(66%) saturate(5315%) hue-rotate(2deg) brightness(103%) contrast(105%);
   width: 16px;
@@ -36,4 +42,8 @@ body {
 
 .pink-label {
   background-color: pink;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
 }

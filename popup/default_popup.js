@@ -66,16 +66,24 @@ function searchMethodShortcutToColorLabelClass(searchMethodShortcut) {
 
 function createConfidenceImage(confidence) {
   const imageConfidence = document.createElement("img");
-  imageConfidence.setAttribute("src", "../icons/dot/dot-circle-svgrepo-com.svg");
-  if(confidence >= 75) {
+  if(confidence >= 80) {
+    imageConfidence.setAttribute("src", "../icons/confidence/down-double-34-svgrepo-com.svg");
     imageConfidence.setAttribute("title", "High confidence: The information was provided directly by the website.");
-    imageConfidence.classList.add("green-dot");
-  } else if(confidence >= 33) {
-    imageConfidence.setAttribute("title", "Medium confidence: The information was retrieved unconventionally and could be wrong.");
-    imageConfidence.classList.add("yellow-dot");
+    imageConfidence.classList.add("confidence-darkgreen");
+    imageConfidence.classList.add("rotate-180");
+  } else if(confidence >= 60) {
+    imageConfidence.setAttribute("src", "../icons/confidence/down-svgrepo-com.svg");
+    imageConfidence.setAttribute("title", "Medium confidence: The information may be retrieved unconventionally and could be wrong.");
+    imageConfidence.classList.add("confidence-lightgreen");
+    imageConfidence.classList.add("rotate-180");
+  } else if(confidence >= 30) {
+    imageConfidence.setAttribute("src", "../icons/confidence/down-double-34-svgrepo-com.svg");
+    imageConfidence.setAttribute("title", "Low confidence: The information was generated based on assumptions and could be wrong.");
+    imageConfidence.classList.add("confidence-yellow");
   } else {
-    imageConfidence.setAttribute("title", "Low confidence: The information was generated based on assumptions and could be totally wrong.");
-    imageConfidence.classList.add("orange-dot");
+    imageConfidence.setAttribute("src", "../icons/confidence/down-double-34-svgrepo-com.svg");
+    imageConfidence.setAttribute("title", "Very low confidence: The information was generated based on assumptions and could be totally wrong.");
+    imageConfidence.classList.add("confidence-orange"); 
   }
 
   return imageConfidence;
