@@ -34,6 +34,7 @@ window.onload = async function () {
     const cellSearchMethodShortcut = document.createElement("td");
     const labelSearchMethodShortcut = document.createElement("label");
     labelSearchMethodShortcut.innerText = r.searchMethodShortcut;
+    labelSearchMethodShortcut.classList.add("label");
     labelSearchMethodShortcut.classList.add(searchMethodShortcutToColorLabelClass(r.searchMethodShortcut));
     cellSearchMethodShortcut.appendChild(labelSearchMethodShortcut);
 
@@ -66,6 +67,8 @@ function searchMethodShortcutToColorLabelClass(searchMethodShortcut) {
 
 function createConfidenceImage(confidence) {
   const imageConfidence = document.createElement("img");
+  imageConfidence.classList.add("confidence");
+
   if(confidence >= 80) {
     imageConfidence.setAttribute("src", "../img/icons/confidence/down-double-34-svgrepo-com.svg");
     imageConfidence.setAttribute("title", "High confidence: The information was provided directly by the website.");

@@ -2,34 +2,37 @@ html,
 body {
   height: 180px;
   width: 100%;
-  min-width: 100px;
+  min-width: 120px;
+}
+
+.confidence {
+  width: 20px;
+  height: 20px;
 }
 
 .confidence-darkgreen {
+  /* filter generated with https://codepen.io/sosuke/pen/Pjoqqp */
   filter: invert(42%) sepia(52%) saturate(2692%) hue-rotate(91deg) brightness(104%) contrast(107%);
-  width: 16px;
-  height: 16px;
 }
 
 .confidence-lightgreen {
   /* filter generated with https://codepen.io/sosuke/pen/Pjoqqp */
   filter: invert(55%) sepia(85%) saturate(1594%) hue-rotate(77deg) brightness(110%) contrast(130%);
-  width: 16px;
-  height: 16px;
 }
 
 .confidence-yellow {
   /* filter generated with https://codepen.io/sosuke/pen/Pjoqqp */
   filter: invert(96%) sepia(49%) saturate(7135%) hue-rotate(357deg) brightness(107%) contrast(104%);
-  width: 16px;
-  height: 16px;
 }
 
 .confidence-orange {
   /* filter generated with https://codepen.io/sosuke/pen/Pjoqqp */
   filter: invert(39%) sepia(66%) saturate(5315%) hue-rotate(2deg) brightness(103%) contrast(105%);
-  width: 16px;
-  height: 16px;
+}
+
+.label {
+  padding: 2px;
+  border-radius: 4px;
 }
 
 .lightblue-label {
@@ -46,4 +49,8 @@ body {
 
 .rotate-180 {
   transform: rotate(180deg);
+}
+
+table#results tr td {
+  padding-bottom: 5px;
 }
