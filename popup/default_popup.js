@@ -3,10 +3,8 @@ window.onload = async function () {
   var DateTime = luxon.DateTime
 
   console.log("onload");
-  var backgroundPage = browser.extension.getBackgroundPage();
-  let results = await backgroundPage.getDateInformation();
-
-  await updateWaybackMachineArea(backgroundPage);
+  let results = await browser.runtime.sendMessage({ type: "getDateInformation", data: {} });
+  await updateWaybackMachineArea();
 
   var numerOfResultsHeading = document.getElementById("number-of-results");
 
@@ -101,10 +99,10 @@ function createConfidenceImage(confidence) {
   return imageConfidence;
 }
 
-async function updateWaybackMachineArea(backgroundPage) {
+async function updateWaybackMachineArea() {
   let waybackArea = document.getElementById("wayback-area");
   let waybackLink = document.getElementById("wayback-link");
-  let tabUrl = await backgroundPage.getUrl();
+  let tabUrl = await browser.runtime.sendMessage({ type: "getUrl", data: {} });
   if(tabUrl.startsWith("http")) {
     let currentYear = new Date().getFullYear();
     let waybackUrl = `https://web.archive.org/web/${currentYear}0000000000*/${tabUrl}`;
