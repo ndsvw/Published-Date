@@ -63,51 +63,48 @@ class MetaSearcher extends Searcher {
 }
 
 class JsonLdSearcher extends Searcher {
-  constructor(dateType, searchLdType, searchProperty, allJsonLds, confidence) {
+  constructor(dateType, searchLdType, searchProperty, jsonLd, confidence) {
     super(dateType);
     this.searchLdType = searchLdType;
     this.searchProperty = searchProperty;
-    this.allJsonLds = allJsonLds;
+    this.jsonLd = jsonLd;
     this.confidence = confidence;
   }
 
   search() {
-    for(let jsonLd of this.allJsonLds) {
+    // cleanse, because some websites have multiline json ld or similar...
+    let cleansedJsonLd = this.jsonLd.replace(/(\r\n|\n|\r|\t)/gm, "");
 
-      // cleanse, because some websites have multiline json ld or similar...
-      let cleansedJsonLd = jsonLd.replace(/(\r\n|\n|\r|\t)/gm, "");
+    let ld = JSON.parse(cleansedJsonLd);
+    if(ld["@context"].match(/^https?:\/\/schema\.org/)) {
+      if(ld["@graph"] !== undefined) {
+        let filtered = ld["@graph"].filter(x => x["@type"] === this.searchLdType);
 
-      let ld = JSON.parse(cleansedJsonLd);
-      if(ld["@context"].match(/^https?:\/\/schema\.org/)) {
-        if(ld["@graph"] !== undefined) {
-          let filtered = ld["@graph"].filter(x => x["@type"] === this.searchLdType);
+        if(filtered === undefined || filtered.length == 0)
+          return undefined;
 
-          if(filtered === undefined || filtered.length == 0)
-            return undefined;
+        let single = filtered[0];
+        
+        if(single[this.searchProperty] === undefined)
+          return undefined;
 
-          let single = filtered[0];
-          
-          if(single[this.searchProperty] === undefined)
-            return undefined;
+        let content = single[this.searchProperty];
+        let date = Date.parse(content);
+        if (isNaN(date))
+          return null;
+        return new SearchResult(this.dateType, content, date, "json-ld", this.confidence);
+      } else {
+        if(ld["@type"] !== this.searchLdType)
+          return undefined;
 
-          let content = single[this.searchProperty];
-          let date = Date.parse(content);
-          if (isNaN(date))
-            return null;
-          return new SearchResult(this.dateType, content, date, "json-ld", this.confidence);
-        } else {
-          if(ld["@type"] !== this.searchLdType)
-            return undefined;
+        let content = ld[this.searchProperty];
+        if(content === undefined)
+          return undefined;
 
-          let content = ld[this.searchProperty];
-          if(content === undefined)
-            return undefined;
-
-          let date = Date.parse(content);
-          if (isNaN(date))
-            return null;
-          return new SearchResult(this.dateType, content, date, "json-ld", this.confidence);  
-        }
+        let date = Date.parse(content);
+        if (isNaN(date))
+          return null;
+        return new SearchResult(this.dateType, content, date, "json-ld", this.confidence);  
       }
     }
 
@@ -125,44 +122,46 @@ class DateParser {
 function findOutDatesFromLdJsons(jsons){
   // https://schema.org/Date
 
-  let ldSearchers = [
-    new JsonLdSearcher(DateType.PUBLISHED, "Answer", "datePublished", jsons, 90),
-    new JsonLdSearcher(DateType.PUBLISHED, "Answer", "dateCreated", jsons, 90),
-    new JsonLdSearcher(DateType.UPDATED, "Answer", "dateModified", jsons, 90),
-
-    new JsonLdSearcher(DateType.PUBLISHED, "Article", "datePublished", jsons, 92.5),
-    new JsonLdSearcher(DateType.PUBLISHED, "Article", "dateCreated", jsons, 92.5),
-    new JsonLdSearcher(DateType.UPDATED, "Article", "dateModified", jsons, 92.5),
-
-    new JsonLdSearcher(DateType.PUBLISHED, "NewsArticle", "datePublished", jsons, 92.5),
-    new JsonLdSearcher(DateType.PUBLISHED, "NewsArticle", "dateCreated", jsons, 92.5),
-    new JsonLdSearcher(DateType.UPDATED, "NewsArticle", "dateModified", jsons, 92.5),
-
-    new JsonLdSearcher(DateType.PUBLISHED, "QAPage", "datePublished", jsons, 92.5),
-    new JsonLdSearcher(DateType.PUBLISHED, "QAPage", "dateCreated", jsons, 92.5),
-    new JsonLdSearcher(DateType.UPDATED, "QAPage", "dateModified", jsons, 92.5),
-
-    new JsonLdSearcher(DateType.PUBLISHED, "Question", "datePublished", jsons, 90),
-    new JsonLdSearcher(DateType.PUBLISHED, "Question", "dateCreated", jsons, 90),
-    new JsonLdSearcher(DateType.UPDATED, "Question", "dateModified", jsons, 90),
-
-    new JsonLdSearcher(DateType.PUBLISHED, "WebPage", "datePublished", jsons, 95),
-    new JsonLdSearcher(DateType.PUBLISHED, "WebPage", "dateCreated", jsons, 95),
-    new JsonLdSearcher(DateType.UPDATED, "WebPage", "dateModified", jsons, 95),
-
-    new JsonLdSearcher(DateType.PUBLISHED, "WebSite", "datePublished", jsons, 95),
-    new JsonLdSearcher(DateType.PUBLISHED, "WebSite", "dateCreated", jsons, 95),
-    new JsonLdSearcher(DateType.UPDATED, "WebSite", "dateModified", jsons, 95),
-
-    new JsonLdSearcher(DateType.PUBLISHED, "JobPosting", "datePosted", jsons, 90),
-    new JsonLdSearcher(DateType.PUBLISHED, "RealEstateListing", "datePosted", jsons, 90),
-    new JsonLdSearcher(DateType.PUBLISHED, "SpecialAnnouncement", "datePosted", jsons, 90),
-
-    new JsonLdSearcher(DateType.PUBLISHED, "MediaObject", "uploadDate", jsons, 90),
-
-  ];
-
-  return ldSearchers.map(x => x.search()).filter(x => x !== undefined && x !== null).map(x => x.toDto());
+  let results = [];
+  for(let json of jsons){
+    let ldSearchers = [
+      new JsonLdSearcher(DateType.PUBLISHED, "Answer", "datePublished", json, 90),
+      new JsonLdSearcher(DateType.PUBLISHED, "Answer", "dateCreated", json, 90),
+      new JsonLdSearcher(DateType.UPDATED, "Answer", "dateModified", json, 90),
+  
+      new JsonLdSearcher(DateType.PUBLISHED, "Article", "datePublished", json, 92.5),
+      new JsonLdSearcher(DateType.PUBLISHED, "Article", "dateCreated", json, 92.5),
+      new JsonLdSearcher(DateType.UPDATED, "Article", "dateModified", json, 92.5),
+  
+      new JsonLdSearcher(DateType.PUBLISHED, "NewsArticle", "datePublished", json, 92.5),
+      new JsonLdSearcher(DateType.PUBLISHED, "NewsArticle", "dateCreated", json, 92.5),
+      new JsonLdSearcher(DateType.UPDATED, "NewsArticle", "dateModified", json, 92.5),
+  
+      new JsonLdSearcher(DateType.PUBLISHED, "QAPage", "datePublished", json, 92.5),
+      new JsonLdSearcher(DateType.PUBLISHED, "QAPage", "dateCreated", json, 92.5),
+      new JsonLdSearcher(DateType.UPDATED, "QAPage", "dateModified", json, 92.5),
+  
+      new JsonLdSearcher(DateType.PUBLISHED, "Question", "datePublished", json, 90),
+      new JsonLdSearcher(DateType.PUBLISHED, "Question", "dateCreated", json, 90),
+      new JsonLdSearcher(DateType.UPDATED, "Question", "dateModified", json, 90),
+  
+      new JsonLdSearcher(DateType.PUBLISHED, "WebPage", "datePublished", json, 95),
+      new JsonLdSearcher(DateType.PUBLISHED, "WebPage", "dateCreated", json, 95),
+      new JsonLdSearcher(DateType.UPDATED, "WebPage", "dateModified", json, 95),
+  
+      new JsonLdSearcher(DateType.PUBLISHED, "WebSite", "datePublished", json, 95),
+      new JsonLdSearcher(DateType.PUBLISHED, "WebSite", "dateCreated", json, 95),
+      new JsonLdSearcher(DateType.UPDATED, "WebSite", "dateModified", json, 95),
+  
+      new JsonLdSearcher(DateType.PUBLISHED, "JobPosting", "datePosted", json, 90),
+      new JsonLdSearcher(DateType.PUBLISHED, "RealEstateListing", "datePosted", json, 90),
+      new JsonLdSearcher(DateType.PUBLISHED, "SpecialAnnouncement", "datePosted", json, 90),
+  
+      new JsonLdSearcher(DateType.PUBLISHED, "MediaObject", "uploadDate", json, 90),
+    ];
+    ldSearchers.map(x => x.search()).filter(x => x !== undefined && x !== null).map(x => x.toDto()).forEach(r => results.push(r));
+  }
+  return results;
 }
 
 function findOutDatesFromMetas(metas) {
