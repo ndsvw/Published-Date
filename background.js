@@ -76,7 +76,7 @@ class JsonLdSearcher extends Searcher {
     let cleansedJsonLd = this.jsonLd.replace(/(\r\n|\n|\r|\t)/gm, "");
 
     let ld = JSON.parse(cleansedJsonLd);
-    if(ld["@context"].match(/^https?:\/\/schema\.org/)) {
+    if(ld["@context"]?.match(/^https?:\/\/schema\.org/)) {
       if(ld["@graph"] !== undefined) {
         let filtered = ld["@graph"].filter(x => x["@type"] === this.searchLdType);
 
