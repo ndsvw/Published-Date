@@ -170,12 +170,14 @@ function findOutDatesFromMetas(metas) {
       new MetaSearcher(DateType.PUBLISHED, "created", metas, 100),
       new MetaSearcher(DateType.PUBLISHED, "available", metas, 95),
       new MetaSearcher(DateType.PUBLISHED, "dateAccepted", metas, 95),
+      new MetaSearcher(DateType.PUBLISHED, "datePublished", metas, 100),
       new MetaSearcher(DateType.PUBLISHED, "dateCopyrighted", metas, 95),
       new MetaSearcher(DateType.PUBLISHED, "issued", metas, 100),
 
       new MetaSearcher(DateType.UPDATED, "article:modified_time", metas, 100),
       new MetaSearcher(DateType.UPDATED, "og:updated_time", metas, 100),
       new MetaSearcher(DateType.UPDATED, "modified", metas, 100),
+      new MetaSearcher(DateType.UPDATED, "dateModified", metas, 100),
       new MetaSearcher(DateType.UPDATED, "revised", metas, 95),
 
       new MetaSearcher(DateType.PUBLISHEDORUPDATED, "date", metas, 95),
