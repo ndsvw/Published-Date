@@ -132,6 +132,10 @@ function findOutDatesFromLdJsons(jsons){
       new JsonLdSearcher(DateType.PUBLISHED, "Article", "datePublished", json, 92.5),
       new JsonLdSearcher(DateType.PUBLISHED, "Article", "dateCreated", json, 92.5),
       new JsonLdSearcher(DateType.UPDATED, "Article", "dateModified", json, 92.5),
+
+      new JsonLdSearcher(DateType.PUBLISHED, "BlogPosting", "datePublished", json, 92.5),
+      new JsonLdSearcher(DateType.PUBLISHED, "BlogPosting", "dateCreated", json, 92.5),
+      new JsonLdSearcher(DateType.UPDATED, "BlogPosting", "dateModified", json, 92.5),
   
       new JsonLdSearcher(DateType.PUBLISHED, "NewsArticle", "datePublished", json, 92.5),
       new JsonLdSearcher(DateType.PUBLISHED, "NewsArticle", "dateCreated", json, 92.5),
