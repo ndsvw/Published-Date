@@ -17,11 +17,11 @@ class DateParser {
   }
 }
 
-function findOutDatesFromLdJsons(jsons){
+function findOutDatesFromLdJsons(jsons) {
   // https://schema.org/Date
 
   let results = [];
-  for(let json of jsons){
+  for (let json of jsons) {
     let ldSearchers = SearcherInstances.GenerateJsonLdSearchers(json)
     ldSearchers.map(x => x.search()).filter(x => x !== undefined && x !== null).map(x => x.toDto()).forEach(r => results.push(r));
   }
@@ -38,7 +38,7 @@ function findOutDatesFromTimeTagDatetimes(datetimes) {
   datetimes.forEach(d => {
     let date = Date.parse(d);
     if (!isNaN(date))
-      results.push(new SearchResult(DateType.PUBLISHEDORUPDATED, d, date, "time-tag", 10));  
+      results.push(new SearchResult(DateType.PUBLISHEDORUPDATED, d, date, "time-tag", 10));
   });
 
   return results;
@@ -54,7 +54,7 @@ const requestHandlers = {
 };
 
 browser.runtime.onMessage.addListener(async (message, sender) => {
-  const { type, data  } = message;
+  const { type, data } = message;
   if (type in requestHandlers) {
     const response = new Promise(async (resolve, reject) => {
       let response = await requestHandlers[type](data);
@@ -98,13 +98,13 @@ async function getDateInformation(data) {
     }
 
     let timeTagsResults = await sendQueryToTab(tab, "get-time-tag-datetimes");
-    if(timeTagsResults) {
+    if (timeTagsResults) {
       let jsonDatetimes = timeTagsResults.response;
       let datetimes = JSON.parse(jsonDatetimes);
       let dateFromTimeTagDatetimes = findOutDatesFromTimeTagDatetimes(datetimes);
       results = results.concat(dateFromTimeTagDatetimes);
     }
-      
+
     return Promise.resolve(results);
   } else {
     console.error("no active tab");
