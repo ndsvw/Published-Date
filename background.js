@@ -80,13 +80,14 @@ async function getDateInformation(data) {
     if (!testConntectionResult)
       return Promise.resolve(undefined);
 
-    let metasResult = await sendQueryToTab(tab, "get-metas");
-    if (!metasResult)
-      return Promise.resolve(undefined);
-    let metasJson = metasResult.response;
-    let metas = JSON.parse(metasJson);
+    let results = [];
 
-    let results = findOutDatesFromMetas(metas);
+    let metasResult = await sendQueryToTab(tab, "get-metas");
+    if (metasResult) {
+      let metasJson = metasResult.response;
+      let metas = JSON.parse(metasJson);
+      results = results.concat(findOutDatesFromMetas(metas));
+    }
 
     let jsonLdResult = await sendQueryToTab(tab, "get-ld-jsons");
     if (jsonLdResult) {
