@@ -14,7 +14,11 @@
   
   "background": {
     "persistent": false,
-    "scripts": ["background.js"]
+    "scripts": [
+      "background.js",
+      "declarations/searchers.js",
+      "declarations/searchers-instances.js"
+    ]
   },
 
   "content_scripts": [{
