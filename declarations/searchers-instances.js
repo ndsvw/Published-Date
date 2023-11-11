@@ -14,6 +14,7 @@ class SearcherInstances {
             new MetaSearcher(DateType.UPDATED, "og:updated_time", metas, 100),
             new MetaSearcher(DateType.UPDATED, "modified", metas, 100),
             new MetaSearcher(DateType.UPDATED, "dateModified", metas, 100),
+            new MetaSearcher(DateType.UPDATED, "updated_at", metas, 100), // microsoft.com
             new MetaSearcher(DateType.UPDATED, "revised", metas, 95),
 
             new MetaSearcher(DateType.PUBLISHEDORUPDATED, "date", metas, 95),
