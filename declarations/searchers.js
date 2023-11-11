@@ -43,8 +43,8 @@ class MetaSearcher extends Searcher {
         if (match) {
             let content = match.content;
             if (content) {
-                let date = Date.parse(content);
-                if (isNaN(date))
+                let date = DateParser.parse(content);
+                if (date == undefined)
                     return null;
                 return new SearchResult(this.dateType, content, date, "meta", this.confidence);
             }
@@ -79,8 +79,8 @@ class JsonLdSearcher extends Searcher {
                     return undefined;
 
                 let content = single[this.searchProperty];
-                let date = Date.parse(content);
-                if (isNaN(date))
+                let date = DateParser.parse(content);
+                if (date == undefined)
                     return null;
                 return new SearchResult(this.dateType, content, date, "json-ld", this.confidence);
             } else {
@@ -91,8 +91,8 @@ class JsonLdSearcher extends Searcher {
                 if (content === undefined)
                     return undefined;
 
-                let date = Date.parse(content);
-                if (isNaN(date))
+                let date = DateParser.parse(content);
+                if (date == undefined)
                     return null;
                 return new SearchResult(this.dateType, content, date, "json-ld", this.confidence);
             }

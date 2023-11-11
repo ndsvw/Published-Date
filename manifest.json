@@ -16,6 +16,7 @@
     "persistent": false,
     "scripts": [
       "background.js",
+      "declarations/dateparser.js",
       "declarations/searchers.js",
       "declarations/searchers-instances.js"
     ]

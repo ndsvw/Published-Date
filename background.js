@@ -10,13 +10,6 @@ const DateType = {
   PUBLISHEDORUPDATED: 'published or updated'
 };
 
-class DateParser {
-  parse(dateString) {
-    let parsedDate = Date.parse(dateString);
-    return isNaN(parsedDate) ? undefined : parsedDate;
-  }
-}
-
 function findOutDatesFromLdJsons(jsons) {
   // https://schema.org/Date
 
@@ -36,8 +29,8 @@ function findOutDatesFromMetas(metas) {
 function findOutDatesFromTimeTagDatetimes(datetimes) {
   let results = [];
   datetimes.forEach(d => {
-    let date = Date.parse(d);
-    if (!isNaN(date))
+    let date = DateParser.parse(d);
+    if (date != undefined)
       results.push(new SearchResult(DateType.PUBLISHEDORUPDATED, d, date, "time-tag", 10));
   });
 
