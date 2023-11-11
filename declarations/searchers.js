@@ -104,11 +104,11 @@ class JsonLdSearcher extends Searcher {
     #isContextValid(ld) {
         const schemaOrgRegex = /^https?:\/\/schema\.org/;
 
-        if(ld["@context"] instanceof String && ld["@context"]?.match(schemaOrgRegex))
+        if(typeof ld["@context"] === "string" && ld["@context"]?.match(schemaOrgRegex))
             return true;
 
         // schema.org itself uses @context like this:
-        if (ld["@context"]["schema"] instanceof String && ld["@context"]["schema"]?.match(schemaOrgRegex))
+        if (typeof ld["@context"]["schema"] === "string" && ld["@context"]["schema"]?.match(schemaOrgRegex))
             return true;
         
         return false;
