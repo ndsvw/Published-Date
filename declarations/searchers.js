@@ -66,7 +66,7 @@ class JsonLdSearcher extends Searcher {
         let cleansedJsonLd = this.jsonLd.replace(/(\r\n|\n|\r|\t)/gm, "");
 
         let ld = JSON.parse(cleansedJsonLd);
-        if (ld["@context"]?.match(/^https?:\/\/schema\.org/)) {
+        if (this.#isContextValid(ld)) {
             if (ld["@graph"] !== undefined) {
                 let filtered = ld["@graph"].filter(x => x["@type"] === this.searchLdType);
 
@@ -99,5 +99,18 @@ class JsonLdSearcher extends Searcher {
         }
 
         return undefined;
+    }
+
+    #isContextValid(ld) {
+        const schemaOrgRegex = /^https?:\/\/schema\.org/;
+
+        if(ld["@context"] instanceof String && ld["@context"]?.match(schemaOrgRegex))
+            return true;
+
+        // schema.org itself uses @context like this:
+        if (ld["@context"]["schema"] instanceof String && ld["@context"]["schema"]?.match(schemaOrgRegex))
+            return true;
+        
+        return false;
     }
 }
