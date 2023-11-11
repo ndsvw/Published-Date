@@ -60,6 +60,10 @@ class SearcherInstances {
             new JsonLdSearcher(DateType.PUBLISHED, "SpecialAnnouncement", "datePosted", json, 90),
 
             new JsonLdSearcher(DateType.PUBLISHED, "MediaObject", "uploadDate", json, 90),
+
+            new JsonLdSearcher(DateType.PUBLISHED, "Recipe", "datePublished", json, 75),
+            new JsonLdSearcher(DateType.PUBLISHED, "Recipe", "dateCreated", json, 75),
+            new JsonLdSearcher(DateType.UPDATED, "Recipe", "dateModified", json, 75),
         ];
     }
 }
