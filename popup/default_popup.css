@@ -5,6 +5,11 @@ body {
   min-width: 120px;
 }
 
+body {
+  /* otherwise, there is a scrollbar that allows scrolling a few pixels */
+  overflow-x: hidden;
+}
+
 .confidence {
   width: 20px;
   height: 20px;
