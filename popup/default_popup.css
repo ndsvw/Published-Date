@@ -58,8 +58,8 @@ body {
   transform: rotate(180deg);
 }
 
-table#results tr td {
-  padding-bottom: 5px;
+table#results {
+  border-spacing: 15px 5px;
 }
 
 table .cell-local-date {
