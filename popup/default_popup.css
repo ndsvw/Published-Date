@@ -12,6 +12,12 @@ body {
   overflow-x: hidden;
 }
 
+#number-of-results {
+  font-size: larger;
+  vertical-align: middle;
+  padding-top: 3px;
+}
+
 .confidence {
   width: 20px;
   height: 20px;
@@ -59,6 +65,7 @@ body {
 }
 
 table#results {
+  margin-top: 8px;
   border-spacing: 15px 5px;
 }
 
