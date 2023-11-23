@@ -54,3 +54,7 @@ body {
 table#results tr td {
   padding-bottom: 5px;
 }
+
+table .cell-local-date {
+  text-align: right;
+}

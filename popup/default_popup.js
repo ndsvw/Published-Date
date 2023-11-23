@@ -36,6 +36,7 @@ window.onload = async function () {
     cellType.innerText = r.dateType;
     
     const cellDate = document.createElement("td");
+    cellDate.classList.add("cell-local-date");
     cellDate.innerText = dt.toLocaleString(DateTime.DATETIME_MED);
     cellDate.setAttribute("title", dt.toRelativeCalendar());
 
