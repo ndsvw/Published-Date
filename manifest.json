@@ -35,5 +35,12 @@
     "default_icon": "img/icons/icon.png",
     "default_title": "Published Date",
     "default_popup": "popup/default_popup.html"
+  },
+  "commands":{
+    "_execute_browser_action": {
+        "suggested_key": {
+            "default": "Alt+Shift+P"
+        }
+    }
   }
 }
