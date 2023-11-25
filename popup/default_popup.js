@@ -3,9 +3,11 @@ window.onload = async function () {
   var DateTime = luxon.DateTime
 
   console.log("onload");
-  let results = await browser.runtime.sendMessage({ type: "getDateInformation", data: {} });
-  await updateWaybackMachineArea();
 
+  let updateExternalAlternativesAreaPromise = updateExternalAlternativesArea();
+
+  let results = await browser.runtime.sendMessage({ type: "getDateInformation", data: {} });
+  
   var numerOfResultsHeading = document.getElementById("number-of-results");
 
   if(results === undefined) {
@@ -47,6 +49,8 @@ window.onload = async function () {
 
     table.appendChild(newRow);
   });
+
+  await updateExternalAlternativesAreaPromise;
 }
 
 function createMethodShortcutLabel(searchMethodShortcut) {
@@ -100,19 +104,27 @@ function createConfidenceImage(confidence) {
   return imageConfidence;
 }
 
-async function updateWaybackMachineArea() {
-  let waybackArea = document.getElementById("wayback-area");
+async function updateExternalAlternativesArea() {
+  let externalAlternativesArea = document.getElementById("external-alternatives-area");
   let waybackLink = document.getElementById("wayback-link");
+  let googleLink = document.getElementById("google-link");
   let tabUrl = await browser.runtime.sendMessage({ type: "getUrl", data: {} });
   if(tabUrl.startsWith("http")) {
     let currentYear = new Date().getFullYear();
-    let waybackUrl = `https://web.archive.org/web/${currentYear}0000000000*/${tabUrl}`;
-    const link = document.createElement("a");
-    link.setAttribute("href", waybackUrl)
-    link.innerText = "WayBackMachine for this site";
-    waybackLink.appendChild(link);
-    waybackArea.style.display = 'block';
+    const waybackUrl = `https://web.archive.org/web/${currentYear}0000000000*/${tabUrl}`;
+    const linkWayback = document.createElement("a");
+    linkWayback.setAttribute("href", waybackUrl)
+    linkWayback.innerText = "WayBackMachine for this site";
+    waybackLink.appendChild(linkWayback);
+
+    const googleUrl = `https://www.google.com/search?q=inurl%3A${tabUrl}`
+    const linkGoogle = document.createElement("a");
+    linkGoogle.setAttribute("href", googleUrl)
+    linkGoogle.innerText = "'Google-inurl' query for this site";
+    googleLink.appendChild(linkGoogle);
+
+    externalAlternativesArea.style.display = 'block';
   } else {
-    waybackArea.style.display = 'none';
+    externalAlternativesArea.style.display = 'none';
   }
 }
