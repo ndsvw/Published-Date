@@ -104,6 +104,9 @@ class JsonLdSearcher extends Searcher {
     #isContextValid(ld) {
         const schemaOrgRegex = /^https?:\/\/schema\.org/;
 
+        if(ld["@context"] === undefined)
+            return false;
+
         if(typeof ld["@context"] === "string" && ld["@context"]?.match(schemaOrgRegex))
             return true;
 
