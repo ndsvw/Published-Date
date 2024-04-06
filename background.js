@@ -13,12 +13,20 @@ const DateType = {
 function findOutDatesFromLdJsons(jsons) {
   // https://schema.org/Date
 
-  let results = [];
+  let searchers = [];
   for (let json of jsons) {
-    let ldSearchers = SearcherInstances.GenerateJsonLdSearchers(json)
-    ldSearchers.map(x => x.search()).filter(x => x !== undefined && x !== null).map(x => x.toDto()).forEach(r => results.push(r));
+    // cleanse, because some websites have multiline json ld or similar...
+    let cleansedJsonLd = json.replace(/(\r\n|\n|\r|\t)/gm, "");
+    let ld = JSON.parse(cleansedJsonLd);
+    if(Array.isArray(ld)) {
+      for(let subld of ld) {
+        searchers.push(...SearcherInstances.GenerateJsonLdSearchers(subld))
+      }
+    } else {
+      searchers.push(...SearcherInstances.GenerateJsonLdSearchers(ld))
+    }
   }
-  return results;
+  return searchers.map(x => x.search()).filter(x => x !== undefined && x !== null).map(x => x.toDto());  
 }
 
 function findOutDatesFromMetas(metas) {

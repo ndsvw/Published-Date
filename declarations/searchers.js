@@ -62,13 +62,9 @@ class JsonLdSearcher extends Searcher {
     }
 
     search() {
-        // cleanse, because some websites have multiline json ld or similar...
-        let cleansedJsonLd = this.jsonLd.replace(/(\r\n|\n|\r|\t)/gm, "");
-
-        let ld = JSON.parse(cleansedJsonLd);
-        if (this.#isContextValid(ld)) {
-            if (ld["@graph"] !== undefined) {
-                let filtered = ld["@graph"].filter(x => x["@type"] === this.searchLdType);
+        if (this.#isContextValid(this.jsonLd)) {
+            if (this.jsonLd["@graph"] !== undefined) {
+                let filtered = this.jsonLd["@graph"].filter(x => x["@type"] === this.searchLdType);
 
                 if (filtered === undefined || filtered.length == 0)
                     return undefined;
@@ -84,10 +80,10 @@ class JsonLdSearcher extends Searcher {
                     return null;
                 return new SearchResult(this.dateType, content, date, "json-ld", this.confidence);
             } else {
-                if (ld["@type"] !== this.searchLdType)
+                if (this.jsonLd["@type"] !== this.searchLdType)
                     return undefined;
 
-                let content = ld[this.searchProperty];
+                let content = this.jsonLd[this.searchProperty];
                 if (content === undefined)
                     return undefined;
 
