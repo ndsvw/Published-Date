@@ -64,7 +64,7 @@ class JsonLdSearcher extends Searcher {
     search() {
         if (this.#isContextValid(this.jsonLd)) {
             if (this.jsonLd["@graph"] !== undefined) {
-                let filtered = this.jsonLd["@graph"].filter(x => x["@type"] === this.searchLdType);
+                let filtered = this.jsonLd["@graph"].filter(x => this.#isTypeMatching(x["@type"], this.searchLdType));
 
                 if (filtered === undefined || filtered.length == 0)
                     return undefined;
@@ -80,7 +80,7 @@ class JsonLdSearcher extends Searcher {
                     return null;
                 return new SearchResult(this.dateType, content, date, "json-ld", this.confidence);
             } else {
-                if (this.jsonLd["@type"] !== this.searchLdType)
+                if (!this.#isTypeMatching(this.jsonLd["@type"], this.searchLdType))
                     return undefined;
 
                 let content = this.jsonLd[this.searchProperty];
@@ -95,6 +95,16 @@ class JsonLdSearcher extends Searcher {
         }
 
         return undefined;
+    }
+
+    #isTypeMatching(sourceCodeTypeValue, searchLdType) {
+        if(typeof sourceCodeTypeValue === "string" && sourceCodeTypeValue === searchLdType)
+            return true;
+
+        if(Array.isArray(sourceCodeTypeValue) && sourceCodeTypeValue.filter(t => t === searchLdType).length >= 1)
+            return true;
+
+        return false;
     }
 
     #isContextValid(ld) {
