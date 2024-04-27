@@ -2,7 +2,7 @@ html,
 body {
   height: 100%;
   min-height: 150px;
-  max-height: 225px;
+  max-height: 300px;
   width: 100%;
   min-width: 180px;
 }
@@ -10,6 +10,23 @@ body {
 body {
   /* otherwise, there is a scrollbar that allows scrolling a few pixels */
   overflow-x: hidden;
+  margin-left: 0;
+  padding-left: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+#header {
+  padding: 8px 0px 5px 3px;
+  background-color: #555555;
+  color: white;
+  margin: 1px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+#main {
+  padding: 10px 0px 10px 5px;
 }
 
 #number-of-results {
