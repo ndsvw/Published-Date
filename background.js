@@ -17,7 +17,13 @@ function findOutDatesFromLdJsons(jsons) {
   for (let json of jsons) {
     // cleanse, because some websites have multiline json ld or similar...
     let cleansedJsonLd = json.replace(/(\r\n|\n|\r|\t)/gm, "");
-    let ld = JSON.parse(cleansedJsonLd);
+    let ld;
+    try {
+      ld = JSON.parse(cleansedJsonLd);
+    } catch(e) {
+      console.warn("Parsing LD JSON failed.");
+      return [];
+    }
     if(Array.isArray(ld)) {
       for(let subld of ld) {
         searchers.push(...SearcherInstances.GenerateJsonLdSearchers(subld))
