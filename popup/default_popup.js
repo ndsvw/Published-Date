@@ -1,23 +1,27 @@
-
 window.onload = async function () {
-  var DateTime = luxon.DateTime
-
+  var DateTime = luxon.DateTime;
   console.log("onload");
+  
+  // Initialize the view
+  await updatePopupContent();
+}
 
+async function updatePopupContent() {
+  var DateTime = luxon.DateTime;
   let updateExternalAlternativesAreaPromise = updateExternalAlternativesArea();
 
   let results = await browser.runtime.sendMessage({ type: "getDateInformation", data: {} });
   
   var numerOfResultsHeading = document.getElementById("number-of-results");
 
-  if(results === undefined) {
+  if(results === undefined || results.length === 0) {
     numerOfResultsHeading.innerText = "No dates found";
     return;
   }
 
   results.sort(function(a,b){ return b.confidence - a.confidence; });
 
-  numerOfResultsHeading.innerText = results.length + " date(s) found";
+  numerOfResultsHeading.innerText = results.length + " date" + (results.length > 1 ? "s" : "") + " found";
 
   var table = document.getElementById("results");
   table.innerText = "";
@@ -108,23 +112,35 @@ async function updateExternalAlternativesArea() {
   let externalAlternativesArea = document.getElementById("external-alternatives-area");
   let waybackLink = document.getElementById("wayback-link");
   let googleLink = document.getElementById("google-link");
-  let tabUrl = await browser.runtime.sendMessage({ type: "getUrl", data: {} });
-  if(tabUrl.startsWith("http")) {
-    let currentYear = new Date().getFullYear();
-    const waybackUrl = `https://web.archive.org/web/${currentYear}0000000000*/${tabUrl}`;
-    const linkWayback = document.createElement("a");
-    linkWayback.setAttribute("href", waybackUrl)
-    linkWayback.innerText = "WayBackMachine for this site";
-    waybackLink.appendChild(linkWayback);
+  
+  try {
+    let tabUrl = await browser.runtime.sendMessage({ type: "getUrl", data: {} });
+    
+    if(tabUrl && tabUrl.startsWith("http")) {
+      let currentYear = new Date().getFullYear();
+      
+      const waybackUrl = `https://web.archive.org/web/${currentYear}0000000000*/${tabUrl}`;
+      const linkWayback = document.createElement("a");
+      linkWayback.setAttribute("href", waybackUrl);
+      linkWayback.setAttribute("target", "_blank");
+      linkWayback.setAttribute("title", "View archived snapshots of this page in the Internet Archive");
+      linkWayback.innerText = "Internet Archive Snapshots";
+      waybackLink.appendChild(linkWayback);
 
-    const googleUrl = `https://www.google.com/search?q=inurl%3A${tabUrl}`
-    const linkGoogle = document.createElement("a");
-    linkGoogle.setAttribute("href", googleUrl)
-    linkGoogle.innerText = "'Google-inurl' query for this site";
-    googleLink.appendChild(linkGoogle);
+      const googleUrl = `https://www.google.com/search?q=inurl%3A${tabUrl}`;
+      const linkGoogle = document.createElement("a");
+      linkGoogle.setAttribute("href", googleUrl);
+      linkGoogle.setAttribute("target", "_blank");
+      linkGoogle.setAttribute("title", "Search Google for this exact URL to find cached versions and references");
+      linkGoogle.innerText = "Google URL Search";
+      googleLink.appendChild(linkGoogle);
 
-    externalAlternativesArea.style.display = 'block';
-  } else {
+      externalAlternativesArea.style.display = 'block';
+    } else {
+      externalAlternativesArea.style.display = 'none';
+    }
+  } catch (error) {
+    console.error("Error updating external alternatives:", error);
     externalAlternativesArea.style.display = 'none';
   }
 }

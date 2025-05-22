@@ -1,32 +1,43 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="default_popup.css" />
   <script src="../bin/luxon_3_4_3.js"></script>
 </head>
-
 <body>
   <div id="header">
-    <img src="../img/icons/icon.png" width="32" height="32" style="vertical-align: middle;" />
-    <b id="number-of-results">Loading...</b>
+    <img src="../img/icons/icon.png" alt="Published Date Icon" />
+    <span id="number-of-results">Loading...</span>
   </div>
+  
   <div id="main">
-    <table id="results">
+    <table id="results"></table>
 
-    </table>
-
-    <div id="external-alternatives-area" style="margin-top: 20px; padding-bottom: 5px;">
-      <b>Alternatives:</b>
-      <ul style="margin-top: 2px;">
-        <li><span id="wayback-link"></span></li>
-        <li><span id="google-link"></span></li>
-      </ul>
+    <div id="external-alternatives-area">
+      <h3>External Verification Sources</h3>
+      <div class="alternatives-grid">
+        <div class="alternative-card">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+              <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path>
+            </svg>
+          </div>
+          <span id="wayback-link"></span>
+        </div>
+        <div class="alternative-card">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+              <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm4.879-2.773 4.264 2.559a.25.25 0 0 1 0 .428l-4.264 2.559A.25.25 0 0 1 6 10.559V5.442a.25.25 0 0 1 .379-.215Z"></path>
+            </svg>
+          </div>
+          <span id="google-link"></span>
+        </div>
+      </div>
     </div>
   </div>
+  
   <script type="module" src="default_popup.js"></script>
 </body>
-
 </html>
