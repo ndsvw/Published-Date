@@ -66,4 +66,10 @@ class SearcherInstances {
             new JsonLdSearcher(DateType.UPDATED, "Recipe", "dateModified", json, 75),
         ];
     }
+
+    static GenerateUrlSearchers(url) {
+        return [
+            new UrlSearcher(DateType.PUBLISHEDORUPDATED, url, 70),
+        ];
+    }
 }

@@ -142,6 +142,11 @@ table .cell-local-date {
   color: #c2185b;
 }
 
+.purple-label {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
 .rotate-180 {
   transform: rotate(180deg);
 }

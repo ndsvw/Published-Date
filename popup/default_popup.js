@@ -110,6 +110,10 @@ function createMethodShortcutLabel(searchMethodShortcut) {
     labelSearchMethodShortcut.classList.add("pink-label");
     labelSearchMethodShortcut.setAttribute("title", "Extracted from a 'time tag' somewhere on the web page");
   }
+  else if(searchMethodShortcut === "url") {
+    labelSearchMethodShortcut.classList.add("purple-label");
+    labelSearchMethodShortcut.setAttribute("title", "Extracted from the URL of the web page");
+  }
   else {
     console.warn(`Invalid operation. Shortcut ${searchMethodShortcut} not recognized.`);
   }

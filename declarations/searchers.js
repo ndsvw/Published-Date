@@ -123,3 +123,39 @@ class JsonLdSearcher extends Searcher {
         return false;
     }
 }
+
+class UrlSearcher extends Searcher {
+    constructor(dateType, url, confidence) {
+        super(dateType);
+        this.url = url;
+        this.confidence = confidence;
+    }
+
+    search() {
+        if (!this.url || this.url === "about:blank") {
+            return null;
+        }
+
+        try {
+            const urlObj = new URL(this.url);
+            const pathname = urlObj.pathname;
+            
+            const datePattern = /(\d{4})[-\/_]?(\d{1,2})[-\/_]?(\d{1,2})/;
+            const match = pathname.match(datePattern);
+            
+            if (match) {
+                const [, year, month, day] = match;
+                const dateStr = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                let date = DateParser.parse(dateStr);
+                if (date !== undefined) {
+                    return new SearchResult(this.dateType, match[0], date, "url", this.confidence);
+                }
+            }
+
+        } catch (e) {
+            // Invalid URL, return null
+        }
+
+        return null;
+    }
+}

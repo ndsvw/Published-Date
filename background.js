@@ -31,7 +31,6 @@ async function notifyPopupOfTabChange(tabId, status) {
       data: { tabId, status } 
     });
   } catch (error) {
-    // Popup not open, ignore error for now
   }
 }
 
@@ -74,6 +73,11 @@ function findOutDatesFromTimeTagDatetimes(datetimes) {
   });
 
   return results;
+}
+
+function findOutDatesFromUrl(url) {
+  let urlSearchers = SearcherInstances.GenerateUrlSearchers(url);
+  return urlSearchers.map(x => x.search()).filter(x => x !== undefined && x !== null).map(x => x.toDto());
 }
 
 //
@@ -136,6 +140,10 @@ async function getDateInformation(data) {
       let dateFromTimeTagDatetimes = findOutDatesFromTimeTagDatetimes(datetimes);
       results = results.concat(dateFromTimeTagDatetimes);
     }
+
+    // Extract dates from URL
+    let datesFromUrl = findOutDatesFromUrl(tab.url);
+    results = results.concat(datesFromUrl);
 
     return Promise.resolve(results);
   } else {
