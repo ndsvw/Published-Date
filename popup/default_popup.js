@@ -4,57 +4,93 @@ window.onload = async function () {
   
   // Initialize the view
   await updatePopupContent();
+  
+  // Set up a simple listener for tab changes (both activation and completion)
+  browser.runtime.onMessage.addListener(async (message) => {
+    if (message.type === "tabChanged") {
+      console.log(`Tab event: ${message.data.status}, tabId: ${message.data.tabId}`);
+      // Update content regardless of the status type
+      await updatePopupContent();
+    }
+  });
+}
+
+function showLoadingState() {
+  // Set loading message
+  var numerOfResultsHeading = document.getElementById("number-of-results");
+  numerOfResultsHeading.innerText = "Loading...";
+  
+  // Clear results table
+  var table = document.getElementById("results");
+  table.innerText = "";
+  
+  // Clear external alternatives area
+  clearExternalAlternativesArea();
 }
 
 async function updatePopupContent() {
   var DateTime = luxon.DateTime;
-  let updateExternalAlternativesAreaPromise = updateExternalAlternativesArea();
-
-  let results = await browser.runtime.sendMessage({ type: "getDateInformation", data: {} });
   
+  // Show loading state
   var numerOfResultsHeading = document.getElementById("number-of-results");
-
-  if(results === undefined || results.length === 0) {
-    numerOfResultsHeading.innerText = "No dates found";
-    return;
-  }
-
-  results.sort(function(a,b){ return b.confidence - a.confidence; });
-
-  numerOfResultsHeading.innerText = results.length + " date" + (results.length > 1 ? "s" : "") + " found";
-
+  numerOfResultsHeading.innerText = "Loading...";
+  
+  // Clear results table but don't remove "Loading..." message yet
   var table = document.getElementById("results");
   table.innerText = "";
+  
+  // Clear external alternatives area
+  clearExternalAlternativesArea();
+  
+  // Start fetching external alternatives (will be populated when data is ready)
+  let updateExternalAlternativesAreaPromise = updateExternalAlternativesArea();
 
-  results.forEach(r => {
-    let dt = DateTime.fromJSDate(new Date(r.interpretedDate));
-
-    const newRow = document.createElement("tr");
-
-    const cellConfidence = document.createElement("td");
-    let imageConfidence = createConfidenceImage(r.confidence);
-    cellConfidence.appendChild(imageConfidence);
-
-    const cellSearchMethodShortcut = document.createElement("td");
-    cellSearchMethodShortcut.appendChild(createMethodShortcutLabel(r.searchMethodShortcut));
-
-    const cellType = document.createElement("td");
-    cellType.innerText = r.dateType;
+  // Get date information
+  try {
+    let results = await browser.runtime.sendMessage({ type: "getDateInformation", data: {} });
     
-    const cellDate = document.createElement("td");
-    cellDate.classList.add("cell-local-date");
-    cellDate.innerText = dt.toLocaleString(DateTime.DATETIME_MED);
-    cellDate.setAttribute("title", dt.toRelativeCalendar());
+    if(results === undefined || results.length === 0) {
+      numerOfResultsHeading.innerText = "No dates found";
+      return;
+    }
 
-    newRow.appendChild(cellConfidence);
-    newRow.appendChild(cellSearchMethodShortcut);
-    newRow.appendChild(cellType);
-    newRow.appendChild(cellDate);
+    results.sort(function(a,b){ return b.confidence - a.confidence; });
 
-    table.appendChild(newRow);
-  });
+    numerOfResultsHeading.innerText = results.length + " date" + (results.length > 1 ? "s" : "") + " found";
 
-  await updateExternalAlternativesAreaPromise;
+    results.forEach(r => {
+      let dt = DateTime.fromJSDate(new Date(r.interpretedDate));
+
+      const newRow = document.createElement("tr");
+
+      const cellConfidence = document.createElement("td");
+      let imageConfidence = createConfidenceImage(r.confidence);
+      cellConfidence.appendChild(imageConfidence);
+
+      const cellSearchMethodShortcut = document.createElement("td");
+      cellSearchMethodShortcut.appendChild(createMethodShortcutLabel(r.searchMethodShortcut));
+
+      const cellType = document.createElement("td");
+      cellType.innerText = r.dateType;
+      
+      const cellDate = document.createElement("td");
+      cellDate.classList.add("cell-local-date");
+      cellDate.innerText = dt.toLocaleString(DateTime.DATETIME_MED);
+      cellDate.setAttribute("title", dt.toRelativeCalendar());
+
+      newRow.appendChild(cellConfidence);
+      newRow.appendChild(cellSearchMethodShortcut);
+      newRow.appendChild(cellType);
+      newRow.appendChild(cellDate);
+
+      table.appendChild(newRow);
+    });
+
+    await updateExternalAlternativesAreaPromise;
+  } catch (error) {
+    console.error("Error fetching date information:", error);
+    numerOfResultsHeading.innerText = "Error loading dates";
+  }
 }
 
 function createMethodShortcutLabel(searchMethodShortcut) {
@@ -106,6 +142,19 @@ function createConfidenceImage(confidence) {
   }
 
   return imageConfidence;
+}
+
+function clearExternalAlternativesArea() {
+  let externalAlternativesArea = document.getElementById("external-alternatives-area");
+  let waybackLink = document.getElementById("wayback-link");
+  let googleLink = document.getElementById("google-link");
+  
+  // Clear existing links
+  waybackLink.innerHTML = "";
+  googleLink.innerHTML = "";
+  
+  // Hide the area until we have new content
+  externalAlternativesArea.style.display = 'none';
 }
 
 async function updateExternalAlternativesArea() {

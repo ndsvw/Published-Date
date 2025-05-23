@@ -10,6 +10,31 @@ const DateType = {
   PUBLISHEDORUPDATED: 'published or updated'
 };
 
+browser.tabs.onActivated.addListener(async (activeInfo) => {
+  notifyPopupOfTabChange(activeInfo.tabId, "activated");
+});
+
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  // Only notify when the tab has completed loading and is active
+  if (changeInfo.status === "complete") {
+    const activeTabs = await browser.tabs.query({ active: true, currentWindow: true });
+    if (activeTabs.length > 0 && activeTabs[0].id === tabId) {
+      notifyPopupOfTabChange(tabId, "complete");
+    }
+  }
+});
+
+async function notifyPopupOfTabChange(tabId, status) {
+  try {
+    await browser.runtime.sendMessage({ 
+      type: "tabChanged", 
+      data: { tabId, status } 
+    });
+  } catch (error) {
+    // Popup not open, ignore error for now
+  }
+}
+
 function findOutDatesFromLdJsons(jsons) {
   // https://schema.org/Date
 
