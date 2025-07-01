@@ -71,7 +71,7 @@ async function updatePopupContent() {
       cellSearchMethodShortcut.appendChild(createMethodShortcutLabel(r.searchMethodShortcut));
 
       const cellType = document.createElement("td");
-      cellType.innerText = r.dateType;
+      cellType.appendChild(createDateTypeIcon(r.dateType));
       
       const cellDate = document.createElement("td");
       cellDate.classList.add("cell-local-date");
@@ -146,6 +146,42 @@ function createConfidenceImage(confidence) {
   }
 
   return imageConfidence;
+}
+
+function createDateTypeIcon(dateType) {
+  const iconWrapper = document.createElement("div");
+  iconWrapper.style.display = "inline-block";
+  iconWrapper.classList.add("date-type-icon");
+  
+  let svgIcon, tooltipText;
+  
+  if (dateType === "published") {
+    // Plus icon for published
+    svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+      <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+    </svg>`;
+    tooltipText = "Published date";
+    iconWrapper.classList.add("date-type-published");
+  } else if (dateType === "updated") {
+    // Refresh/sync icon for updated
+    svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+      <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
+    </svg>`;
+    tooltipText = "Updated date";
+    iconWrapper.classList.add("date-type-updated");
+  } else if (dateType === "published or updated") {
+    // Light blue question mark
+    svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+      <text x="8" y="12" text-anchor="middle" font-size="14" font-weight="bold" font-family="Arial, sans-serif" fill="#4A90E2">?</text>
+    </svg>`;
+    tooltipText = "Published or updated date (ambiguous)";
+    iconWrapper.classList.add("date-type-published-or-updated");
+  }
+  
+  iconWrapper.innerHTML = svgIcon;
+  iconWrapper.setAttribute("title", tooltipText);
+  
+  return iconWrapper;
 }
 
 function clearExternalAlternativesArea() {

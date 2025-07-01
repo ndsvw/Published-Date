@@ -208,3 +208,22 @@ table .cell-local-date {
   text-decoration: underline;
   color: var(--primary-dark);
 }
+
+.date-type-icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  cursor: help;
+}
+
+.date-type-published {
+  filter: invert(41%) sepia(77%) saturate(1611%) hue-rotate(91deg) brightness(96%) contrast(101%);
+}
+
+.date-type-updated {
+  filter: invert(36%) sepia(93%) saturate(1493%) hue-rotate(199deg) brightness(96%) contrast(101%);
+}
+
+.date-type-published-or-updated {
+  filter: invert(58%) sepia(89%) saturate(1433%) hue-rotate(359deg) brightness(98%) contrast(101%);
+}
