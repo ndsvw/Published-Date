@@ -141,6 +141,17 @@ async function getDateInformation(data) {
       results = results.concat(dateFromTimeTagDatetimes);
     }
 
+    let scriptTagsResults = await sendQueryToTab(tab, "get-script-tags");
+    if (scriptTagsResults) {
+      let jsonScriptTags = scriptTagsResults.response;
+      let scriptTags = JSON.parse(jsonScriptTags);
+      let scriptTagSearchers = SearcherInstances.GenerateScriptTagSearchers(scriptTags);
+      let datesFromScriptTags = scriptTagSearchers.map(x => x.search())
+          .filter(x => x !== undefined && x !== null)
+          .map(x => x.toDto());
+      results = results.concat(datesFromScriptTags);
+    }
+
     // Extract dates from URL
     let datesFromUrl = findOutDatesFromUrl(tab.url);
     results = results.concat(datesFromUrl);

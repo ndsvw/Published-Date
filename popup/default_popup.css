@@ -147,6 +147,11 @@ table .cell-local-date {
   color: #7b1fa2;
 }
 
+.green-label {
+  background-color: #e1f5fe;
+  color: #0ea811;
+}
+
 .rotate-180 {
   transform: rotate(180deg);
 }

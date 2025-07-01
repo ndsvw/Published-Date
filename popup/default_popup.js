@@ -111,11 +111,15 @@ function createMethodShortcutLabel(searchMethodShortcut) {
     labelSearchMethodShortcut.setAttribute("title", "Extracted from a 'time tag' somewhere on the web page");
   }
   else if(searchMethodShortcut === "url") {
-    labelSearchMethodShortcut.classList.add("purple-label");
-    labelSearchMethodShortcut.setAttribute("title", "Extracted from the URL of the web page");
+      labelSearchMethodShortcut.classList.add("purple-label");
+      labelSearchMethodShortcut.setAttribute("title", "Extracted from the URL of the web page");
+  }
+  else if(searchMethodShortcut === "script-tag") {
+      labelSearchMethodShortcut.classList.add("green-label");
+      labelSearchMethodShortcut.setAttribute("title", "Extracted from a script tag on the web page");
   }
   else {
-    console.warn(`Invalid operation. Shortcut ${searchMethodShortcut} not recognized.`);
+      console.warn(`Invalid operation. Shortcut ${searchMethodShortcut} not recognized.`);
   }
 
   return labelSearchMethodShortcut;

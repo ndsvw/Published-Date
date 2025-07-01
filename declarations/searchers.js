@@ -159,3 +159,46 @@ class UrlSearcher extends Searcher {
         return null;
     }
 }
+
+class ScriptTagSearcher extends Searcher {
+    constructor(dateType, scriptContent, confidence) {
+        super(dateType);
+        this.scriptContent = scriptContent;
+        this.confidence = confidence;
+    }
+
+    search() {
+        if (!this.scriptContent) {
+            return null;
+        }
+
+        try {
+            // ISO 8601 date pattern, e.g.:
+            // YYYY-MM-DD
+            // YYYY-MM-DDThh:mm:ss
+            // YYYY-MM-DDThh:mm:ssZ
+            // YYYY-MM-DDThh:mm:ss+hh:mm
+            const isoDatePattern = /(\b\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?)?\b)/g;
+            
+            const matches = [...this.scriptContent.matchAll(isoDatePattern)];
+            
+            if (matches.length === 0) {
+                return null;
+            }
+            
+            // Only the first match for now to maintain compatibility with the existing architecture.
+            // Could be improve to return more results.
+            const dateStr = matches[0][0];
+            const date = DateParser.parse(dateStr);
+            
+            if (date === undefined) {
+                return null;
+            }
+            
+            return new SearchResult(this.dateType, dateStr, date, "script-tag", this.confidence);
+        } catch (e) {
+            // Error in regex or parsing, return null
+            return null;
+        }
+    }
+}

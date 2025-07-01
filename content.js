@@ -28,5 +28,10 @@ browser.runtime.onMessage.addListener(request => {
                 console.log(timeTags);
             return Promise.resolve({ response: JSON.stringify(timeTags) });
         }
+        else if (request.query == "get-script-tags") {
+            let scriptTags = Array.from(document.querySelectorAll("script:not([type='application/ld+json'])"))
+                .map(x => x.innerText);
+            return Promise.resolve({ response: JSON.stringify(scriptTags) });
+        }
     }
 });

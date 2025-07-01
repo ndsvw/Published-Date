@@ -72,4 +72,10 @@ class SearcherInstances {
             new UrlSearcher(DateType.PUBLISHEDORUPDATED, url, 70),
         ];
     }
+
+    static GenerateScriptTagSearchers(scriptContents) {
+        return scriptContents.map(scriptContent =>
+            new ScriptTagSearcher(DateType.PUBLISHEDORUPDATED, scriptContent, 10) // Low confidence
+        );
+    }
 }
