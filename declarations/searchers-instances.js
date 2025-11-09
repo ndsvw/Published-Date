@@ -23,10 +23,14 @@ class SearcherInstances {
 
     static GenerateJsonLdSearchers(json) {
         return [
-            new JsonLdSearcher(DateType.PUBLISHED, "Answer", "datePublished", json, 90),
-            new JsonLdSearcher(DateType.PUBLISHED, "Answer", "dateCreated", json, 90),
-            new JsonLdSearcher(DateType.UPDATED, "Answer", "dateModified", json, 90),
+            new JsonLdSearcher(DateType.PUBLISHED, "WebPage", "datePublished", json, 95),
+            new JsonLdSearcher(DateType.PUBLISHED, "WebPage", "dateCreated", json, 95),
+            new JsonLdSearcher(DateType.UPDATED, "WebPage", "dateModified", json, 95),
 
+            new JsonLdSearcher(DateType.PUBLISHED, "WebSite", "datePublished", json, 95),
+            new JsonLdSearcher(DateType.PUBLISHED, "WebSite", "dateCreated", json, 95),
+            new JsonLdSearcher(DateType.UPDATED, "WebSite", "dateModified", json, 95),
+            
             new JsonLdSearcher(DateType.PUBLISHED, "Article", "datePublished", json, 92.5),
             new JsonLdSearcher(DateType.PUBLISHED, "Article", "dateCreated", json, 92.5),
             new JsonLdSearcher(DateType.UPDATED, "Article", "dateModified", json, 92.5),
@@ -43,27 +47,54 @@ class SearcherInstances {
             new JsonLdSearcher(DateType.PUBLISHED, "QAPage", "dateCreated", json, 92.5),
             new JsonLdSearcher(DateType.UPDATED, "QAPage", "dateModified", json, 92.5),
 
+            new JsonLdSearcher(DateType.PUBLISHED, "ScholarlyArticle", "datePublished", json, 92.5),
+            new JsonLdSearcher(DateType.PUBLISHED, "ScholarlyArticle", "dateCreated", json, 92.5),
+            new JsonLdSearcher(DateType.UPDATED, "ScholarlyArticle", "dateModified", json, 92.5),
+            
+            new JsonLdSearcher(DateType.PUBLISHED, "Answer", "datePublished", json, 90),
+            new JsonLdSearcher(DateType.PUBLISHED, "Answer", "dateCreated", json, 90),
+            new JsonLdSearcher(DateType.UPDATED, "Answer", "dateModified", json, 90),
+
             new JsonLdSearcher(DateType.PUBLISHED, "Question", "datePublished", json, 90),
             new JsonLdSearcher(DateType.PUBLISHED, "Question", "dateCreated", json, 90),
             new JsonLdSearcher(DateType.UPDATED, "Question", "dateModified", json, 90),
-
-            new JsonLdSearcher(DateType.PUBLISHED, "WebPage", "datePublished", json, 95),
-            new JsonLdSearcher(DateType.PUBLISHED, "WebPage", "dateCreated", json, 95),
-            new JsonLdSearcher(DateType.UPDATED, "WebPage", "dateModified", json, 95),
-
-            new JsonLdSearcher(DateType.PUBLISHED, "WebSite", "datePublished", json, 95),
-            new JsonLdSearcher(DateType.PUBLISHED, "WebSite", "dateCreated", json, 95),
-            new JsonLdSearcher(DateType.UPDATED, "WebSite", "dateModified", json, 95),
 
             new JsonLdSearcher(DateType.PUBLISHED, "JobPosting", "datePosted", json, 90),
             new JsonLdSearcher(DateType.PUBLISHED, "RealEstateListing", "datePosted", json, 90),
             new JsonLdSearcher(DateType.PUBLISHED, "SpecialAnnouncement", "datePosted", json, 90),
 
-            new JsonLdSearcher(DateType.PUBLISHED, "MediaObject", "uploadDate", json, 90),
+            new JsonLdSearcher(DateType.PUBLISHED, "Thesis", "datePublished", json, 90),
 
-            new JsonLdSearcher(DateType.PUBLISHED, "Recipe", "datePublished", json, 75),
-            new JsonLdSearcher(DateType.PUBLISHED, "Recipe", "dateCreated", json, 75),
-            new JsonLdSearcher(DateType.UPDATED, "Recipe", "dateModified", json, 75),
+            new JsonLdSearcher(DateType.PUBLISHED, "Report", "datePublished", json, 90),
+
+            new JsonLdSearcher(DateType.PUBLISHED, "Review", "datePublished", json, 90),
+
+            new JsonLdSearcher(DateType.PUBLISHED, "Dataset", "datePublished", json, 90),
+
+            new JsonLdSearcher(DateType.PUBLISHED, "DiscussionForumPosting", "datePublished", json, 85),
+
+            new JsonLdSearcher(DateType.PUBLISHED, "LiveBlogPosting", "datePublished", json, 85),
+
+            new JsonLdSearcher(DateType.PUBLISHED, "MediaObject", "uploadDate", json, 80),
+            new JsonLdSearcher(DateType.PUBLISHED, "VideoObject", "uploadDate", json, 80),
+            new JsonLdSearcher(DateType.PUBLISHED, "ImageObject", "uploadDate", json, 80),
+            new JsonLdSearcher(DateType.PUBLISHED, "AudioObject", "uploadDate", json, 80),
+
+            new JsonLdSearcher(DateType.PUBLISHED, "Recipe", "datePublished", json, 80),
+            new JsonLdSearcher(DateType.PUBLISHED, "Recipe", "dateCreated", json, 80),
+            new JsonLdSearcher(DateType.UPDATED, "Recipe", "dateModified", json, 80),
+
+            new JsonLdSearcher(DateType.PUBLISHED, "HowTo", "datePublished", json, 80),
+            
+            new JsonLdSearcher(DateType.PUBLISHED, "Course", "datePublished", json, 80),
+
+            new JsonLdSearcher(DateType.PUBLISHED, "CreativeWork", "datePublished", json, 80),
+
+            new JsonLdSearcher(DateType.PUBLISHED, "SoftwareSourceCode", "datePublished", json, 80),
+
+            new JsonLdSearcher(DateType.PUBLISHED, "Book", "datePublished", json, 75),
+            new JsonLdSearcher(DateType.PUBLISHED, "Book", "dateCreated", json, 75),
+            new JsonLdSearcher(DateType.UPDATED, "Book", "dateModified", json, 75),
         ];
     }
 
